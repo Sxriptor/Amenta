@@ -2,7 +2,10 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import type { ITelemetryItem, ITelemetryUnloadState } from '@microsoft/1ds-core-js';
+// Null types for telemetry - disabled in Amenta
+type ITelemetryItem = any;
+type ITelemetryUnloadState = any;
+
 import assert from 'assert';
 import { ensureNoDisposablesAreLeakedInTestSuite } from '../../../../base/test/common/utils.js';
 import { OneDataSystemWebAppender } from '../../browser/1dsAppender.js';

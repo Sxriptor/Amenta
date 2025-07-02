@@ -3,7 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type { IPayloadData, IXHROverride } from '@microsoft/1ds-post-js';
+// Null types for telemetry - disabled in Amenta
+type IPayloadData = any;
+type IXHROverride = any;
+
 import { streamToBuffer } from '../../../base/common/buffer.js';
 import { CancellationToken } from '../../../base/common/cancellation.js';
 import { IRequestOptions } from '../../../base/parts/request/common/request.js';
@@ -72,27 +75,9 @@ async function makeLegacyTelemetryRequest(options: IRequestOptions): Promise<IRe
 }
 
 async function sendPostAsync(requestService: IRequestService | undefined, payload: IPayloadData, oncomplete: OnCompleteFunc) {
-	const telemetryRequestData = typeof payload.data === 'string' ? payload.data : new TextDecoder().decode(payload.data);
-	const requestOptions: IRequestOptions = {
-		type: 'POST',
-		headers: {
-			...payload.headers,
-			'Content-Type': 'application/json',
-			'Content-Length': Buffer.byteLength(payload.data).toString()
-		},
-		url: payload.urlString,
-		data: telemetryRequestData
-	};
-
-	try {
-		const responseData = requestService ? await makeTelemetryRequest(requestOptions, requestService) : await makeLegacyTelemetryRequest(requestOptions);
-		oncomplete(responseData.statusCode, responseData.headers, responseData.responseData);
-	} catch {
-		// If it errors out, send status of 0 and a blank response to oncomplete so we can retry events
-		oncomplete(0, {});
-	}
+	// Telemetry is disabled in Amenta - do nothing
+	oncomplete(200, {}, '');
 }
-
 
 export class OneDataSystemAppender extends AbstractOneDataSystemAppender {
 
@@ -103,11 +88,11 @@ export class OneDataSystemAppender extends AbstractOneDataSystemAppender {
 		defaultData: { [key: string]: any } | null,
 		iKeyOrClientFactory: string | (() => IAppInsightsCore), // allow factory function for testing
 	) {
-		// Override the way events get sent since node doesn't have XHTMLRequest
+		// Telemetry is disabled in Amenta
 		const customHttpXHROverride: IXHROverride = {
 			sendPOST: (payload: IPayloadData, oncomplete: OnCompleteFunc) => {
-				// Fire off the async request without awaiting it
-				sendPostAsync(requestService, payload, oncomplete);
+				// Do nothing - telemetry is disabled
+				oncomplete(200, {}, '');
 			}
 		};
 
