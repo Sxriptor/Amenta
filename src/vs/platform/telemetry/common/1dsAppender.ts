@@ -14,21 +14,17 @@ export interface IAppInsightsCore {
 
 export abstract class AbstractOneDataSystemAppender implements ITelemetryAppender {
 
-	protected _aiCoreOrKey: IAppInsightsCore | string | undefined;
-	private _asyncAiCore: Promise<IAppInsightsCore> | null;
 	protected readonly endPointUrl = '';
 	protected readonly endPointHealthUrl = '';
 
 	constructor(
-		private readonly _isInternalTelemetry: boolean,
-		private _eventPrefix: string,
-		private _defaultData: { [key: string]: any } | null,
-		iKeyOrClientFactory: string | (() => IAppInsightsCore),
-		private _xhrOverride?: any
+		_isInternalTelemetry: boolean,
+		_eventPrefix: string,
+		_defaultData: { [key: string]: any } | null,
+		_iKeyOrClientFactory: string | (() => IAppInsightsCore),
+		_xhrOverride?: any
 	) {
-		// Telemetry is disabled in Amenta
-		this._aiCoreOrKey = undefined;
-		this._asyncAiCore = null;
+		// Telemetry is disabled in Amenta - all parameters ignored
 	}
 
 	log(eventName: string, data?: any): void {
